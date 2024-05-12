@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.flex button {
+  height: 20px;
+  background-color: red;
+  color: white;
+}
+
+.flex button:hover {
+  cursor: pointer;
+}
+
+.content {
+  /* border: 1px solid #000; */
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 600ms ease, opacity 1000ms ease;
+}
+
+.content.active {
+  max-height: 1000px;
+  opacity: 1;
+  transition: max-height 600ms ease, opacity 1000ms ease;
+}
+
+/* ############################### */
+/* change it later  */
+.css-11se5jq-MuiButtonBase-root-MuiMenuItem-root-MuiMultiSectionDigitalClockSection-item.Mui-selected {
+  background-color: #e69005 !important;
+}
+
+
