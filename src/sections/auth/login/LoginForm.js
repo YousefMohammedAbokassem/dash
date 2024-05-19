@@ -19,13 +19,14 @@ export default function LoginForm() {
   // phone
   ////////////////////////
   const setInfoNumber = (value, country, e, formattedValue) => {
-    console.log(`+${value}`);
-    console.log(formattedValue, 'formattedValue');
+    // console.log(`${value}`);
+    // console.log(`${country.dialCode}`);
+    // console.log(`${formattedValue}`);
     if (value.indexOf(country.dialCode) !== -1) {
-      // console.log(value.slice(value.indexOf(country.dialCode).length));
       setValues((prev) => ({
         ...prev,
-        phone: `+${value}`,
+        phone: `${value.slice(country.dialCode.length)}`,
+        country_code: `+${country.dialCode}`,
         // prev.password: e.target.value,
       }));
     }
@@ -40,7 +41,7 @@ export default function LoginForm() {
   const [values, setValues] = useState({
     phone: '',
     password: '',
-    // fcm_token: "666"
+    country_code: '',
   });
 
   const handleChangePass = (e) => {
@@ -58,6 +59,7 @@ export default function LoginForm() {
         setValues({
           phone: '',
           password: '',
+          country_code: '',
         });
         navigate('/dashboard', { replace: true });
       } else {
@@ -82,8 +84,8 @@ export default function LoginForm() {
               // value={phone}
               // dir="ltr"
               name="tel"
-              containerClass="direction py-3"
-              inputClass="inputPhone"
+              containerClass="direction"
+              inputClass="inputPhone px-2"
               onChange={(value, country, e, formattedValue) => setInfoNumber(value, country, e, formattedValue)}
               inputProps={{
                 required: true,

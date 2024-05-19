@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const PlaceCard = ({ element, setDelete, setOpenDelete, setSelectedUpdate, setOpenUpdate }) => {
   const navigate = useNavigate();
-  console.log(element);
   const handleDelete = () => {
     setDelete(element.id);
     setOpenDelete(true);
@@ -14,7 +13,6 @@ const PlaceCard = ({ element, setDelete, setOpenDelete, setSelectedUpdate, setOp
     setSelectedUpdate(element);
     setOpenUpdate(true);
   };
-  console.log(element);
   return (
     // <Card sx={{ width: 345 }}>
     <Card sx={{ width: '100%' }}>

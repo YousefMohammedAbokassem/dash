@@ -13,9 +13,10 @@ import {
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import Map from './Map';
+import { logoutUser } from 'src/store/authSlice';
 
 const rule = ['admin', 'super'];
 const center = {
@@ -69,18 +70,12 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
       formData.append('category_id', values.city_id);
       formData.append('image', selectFile);
       // formData.append('image', selecteFile);
-
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/places`, formData, {
           headers: headerApi(token),
         })
         .then((res) => {
           setLoading(false);
-          console.log(res);
           setSuccessMessage('Added Success');
           setData((prev) => [...prev, res.data.data]);
           handleClose();
@@ -108,9 +103,12 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
         setCity(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   }, []);
+  const dispatch = useDispatch();
   const [markerPosition, setMarkerPosition] = useState(center);
   return (
     <>
@@ -183,7 +181,7 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
               </Grid>
               <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                 <label htmlFor="file">
-                  <Button color='warning' variant="contained" onClick={handleOpenFile} sx={{ color: '#fff' }}>
+                  <Button color="warning" variant="contained" onClick={handleOpenFile} sx={{ color: '#fff' }}>
                     Image
                   </Button>
                 </label>

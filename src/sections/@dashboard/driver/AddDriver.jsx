@@ -13,7 +13,8 @@ import {
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const rule = ['admin', 'super'];
@@ -24,7 +25,7 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const dispatch = useDispatch();
   const handleClose = () => {
     setOpen(false);
     handleCloseMenu();
@@ -56,17 +57,13 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
       formData.append('key', values.key);
       formData.append('value', values.value);
 
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-
+   
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/settings`, formData, {
           headers: headerApi(token),
         })
         .then((res) => {
           setLoading(false);
-          console.log(res);
           setSuccessMessage('Added Success');
           setData((prev) => [...prev, res.data.data]);
           handleClose();
@@ -76,6 +73,9 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
             setErrorMessage(error.response.data.message);
           } else {
             setErrorMessage('Error, please try again');
+          }
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
           }
           setLoading(false);
         });

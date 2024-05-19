@@ -41,12 +41,10 @@ const Intervals = () => {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res);
         setIntervals(res.data.data);
         setIntervalsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIntervalsLoading(false);
         if (error.response.status === 401) {
           dispatch(logoutUser());
@@ -61,12 +59,10 @@ const Intervals = () => {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res);
         setCity(res.data.data);
         setLoadingCity(false);
       })
       .catch((error) => {
-        console.log(error);
         setLoadingCity(false);
         if (error.response.status === 401) {
           dispatch(logoutUser());

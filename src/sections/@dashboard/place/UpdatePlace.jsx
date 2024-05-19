@@ -13,9 +13,10 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import Map from './Map';
+import { logoutUser } from 'src/store/authSlice';
 const center = {
   lat: 33.50006,
   lng: 36.2973314,
@@ -54,16 +55,17 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
           // setSuccessMessage('Updated Successfuly');
           handleClose();
           onUpdateSuccess(res.data.data);
-          console.log('asdasdasdasd', selectFile);
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setErrorMessage('Error please try again');
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
+          }
         });
     },
   });
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -102,7 +104,9 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
         setCity(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   }, []);
   // handle file

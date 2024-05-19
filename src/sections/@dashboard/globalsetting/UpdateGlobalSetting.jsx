@@ -12,12 +12,12 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handleCloseMenu, element }) => {
   const { token } = useSelector((state) => state.auth);
-  console.log(element);
   const handleClose = () => {
     setOpen(false);
     setErrorMessage('');
@@ -38,9 +38,8 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
   useEffect(() => {
     if (element) {
       setValues({
-        name: element.name || '',
-        description: element.description || '',
-        image: element?.images?.[0]?.path || '',
+        key: element.key || '',
+        value: element.value || '',
       });
     }
   }, [element]);
@@ -66,7 +65,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
   const handleSelectFile = (e) => {
     // if (e.target.files && e.target.files[0]) {
     setSelectFile(e.target.files[0]);
-    console.log(e.target.files[0]);
     const selectedImage = e.target.files[0];
     const reader = new FileReader();
     // }
@@ -77,56 +75,44 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
       reader.readAsDataURL(selectedImage);
     }
   };
-
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const handleSendApi = () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append('name', values.name);
-    formData.append('description', values.description);
-    formData.append('image', selecteFile);
-    formData.append('id', element.id);
-    formData.append('_method', 'PUT');
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
-    console.log(imageUrl);
+    formData.append('key', values.key);
+    formData.append('value', values.value);
     axios
-      .post(`${process.env.REACT_APP_API_URL}admin/settings/${element.id}`, formData, {
+      .post(`${process.env.REACT_APP_API_URL}admin/settings`, formData, {
         headers: headerApi(token),
       })
       .then((res) => {
         setLoading(false);
         setOpen(false);
         handleCloseMenu();
-        console.log(globalSettings);
         setGlobalSettings((prev) =>
           prev.map((admin) =>
             admin.id === element.id
               ? {
                   ...admin,
-                  name: values.name,
-                  description: values.description,
+                  key: values.key,
+                  value: values.value,
                   // images: [...admin.images, { image: imageUrl }],
-                  images: [
-                    {
-                      ...admin.images,
-                      path: imageUrl,
-                    },
-                  ],
                 }
               : admin
           )
         );
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         if (error.response) {
           setErrorMessage(error.response.data.message);
         } else {
           setErrorMessage('Error, please try again');
+        }
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
         }
       });
   };
@@ -158,16 +144,22 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         <DialogContent>
           <Grid container spacing={3} sx={{ marginTop: '20px' }}>
             <Grid item xs={12} md={6}>
-              {/* <TextField fullWidth label="Name" required name="name" value={values.name} onChange={handleChange} /> */}
               <TextField
                 color="warning"
                 fullWidth
-                label="Name"
+                label="Key"
+                name="key"
+                select
                 required
-                name="name"
-                value={values.name}
                 onChange={handleChange}
-              />
+                value={values.key}
+              >
+                {['tax', 'commission', 'kmPrice'].map((element, index) => (
+                  <MenuItem key={index} value={element}>
+                    {element}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
             {/* <Grid item xs={12} md={6}>
               <TextField fullWidth label="City" select name="city_id" value={values.city_id} onChange={handleChange}>
@@ -183,10 +175,11 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
               <TextField
                 color="warning"
                 fullWidth
-                label="Description"
+                label="Value"
+                name="value"
                 required
-                name="description"
-                value={values.description}
+                type="number"
+                value={values.value}
                 onChange={handleChange}
               />
             </Grid>

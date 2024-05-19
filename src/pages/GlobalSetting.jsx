@@ -162,11 +162,11 @@ export default function GlobalSetting() {
         setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
         handleCloseMenu();
         // fetchData();
-        console.log(res);
+        
       })
       .catch((error) => {
         setDeleteLoading(false);
-        console.log(error);
+      
       });
   };
   const fetchData = () => {
@@ -177,7 +177,6 @@ export default function GlobalSetting() {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res.data.data);
         setGlobalSettings(res.data.data);
         setLoadingData(false);
       })
@@ -185,7 +184,6 @@ export default function GlobalSetting() {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
         setLoadingData(false);
       });
   };
@@ -201,7 +199,6 @@ export default function GlobalSetting() {
   const handleUpdate = () => {
     setOpenUpdate(true);
   };
-  console.log(globalSettings);
   return (
     <>
       <Helmet>

@@ -125,7 +125,7 @@ export default function Category() {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage); 
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -168,7 +168,6 @@ export default function Category() {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
       });
   };
   const fetchData = () => {
@@ -179,7 +178,6 @@ export default function Category() {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res.data.data);
         setCategories(res.data.data);
         setLoadingData(false);
       })
@@ -187,7 +185,6 @@ export default function Category() {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
         setLoadingData(false);
       });
   };

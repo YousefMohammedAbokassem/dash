@@ -17,7 +17,6 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const { loading, error } = useSelector((state) => state.auth);
   const admin = useSelector((state) => state.auth.admin);
-  console.log(admin);
   const [account, setAccount] = useState(JSON.parse(localStorage.getItem('admin')));
 
   const handleOpen = (event) => {

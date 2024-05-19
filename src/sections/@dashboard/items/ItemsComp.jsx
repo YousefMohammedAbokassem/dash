@@ -82,7 +82,7 @@ const ItemsComp = ({
 
   return (
     <>
-      <Container>
+      <Container sx={{ padding: `0 !important` }}>
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>

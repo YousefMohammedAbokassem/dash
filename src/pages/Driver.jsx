@@ -148,7 +148,7 @@ export default function GlobalSetting() {
 
   const [loadingData, setLoadingData] = useState(false);
 
-  const [openAdd, setOpenAdd] = useState(false);
+  // const [openAdd, setOpenAdd] = useState(false);
 
   //handle delete admin
 
@@ -165,14 +165,12 @@ export default function GlobalSetting() {
         setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
         handleCloseMenu();
         // fetchData();
-        console.log(res);
       })
       .catch((error) => {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
         setDeleteLoading(false);
-        console.log(error);
       });
   };
   //handle accept driver
@@ -190,17 +188,26 @@ export default function GlobalSetting() {
       )
       .then((res) => {
         setAcceptLoading(false);
-        setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
+        setGlobalSettings((prev) =>
+          prev.map((el) => {
+            if (el.id === selectedList) {
+              return {
+                ...el,
+                status: res.data.data.status,
+              };
+            } else {
+              return el;
+            }
+          })
+        );
         handleCloseMenu();
         // fetchData();
-        console.log(res);
       })
       .catch((error) => {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
         setAcceptLoading(false);
-        console.log(error);
       });
   };
   //handle reject driver
@@ -221,14 +228,12 @@ export default function GlobalSetting() {
         setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
         handleCloseMenu();
         // fetchData();
-        console.log(res);
       })
       .catch((error) => {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
         setRejectLoading(false);
-        console.log(error);
       });
   };
   const fetchData = () => {
@@ -239,7 +244,6 @@ export default function GlobalSetting() {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res.data.data);
         setGlobalSettings(res.data.data);
         setLoadingData(false);
       })
@@ -247,7 +251,6 @@ export default function GlobalSetting() {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
         setLoadingData(false);
       });
   };
@@ -263,7 +266,6 @@ export default function GlobalSetting() {
   const handleUpdate = () => {
     setOpenUpdate(true);
   };
-  console.log(globalSettings);
   return (
     <>
       <Helmet>
@@ -275,7 +277,7 @@ export default function GlobalSetting() {
           <Typography variant="h4" gutterBottom color={'warning.main'}>
             Drivers
           </Typography>
-          <Button
+          {/* <Button
             onClick={() => setOpenAdd(true)}
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
@@ -283,7 +285,7 @@ export default function GlobalSetting() {
             sx={{ color: '#fff' }}
           >
             New Driver
-          </Button>
+          </Button> */}
         </Stack>
 
         <Card>
@@ -384,7 +386,7 @@ export default function GlobalSetting() {
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Update Global Setting
         </MenuItem>
-        {selectedGlobalSetting?.status !== 'pending' ? (
+        {selectedGlobalSetting?.status === 'pending' ? (
           <>
             <MenuItem sx={{ color: 'primary.main' }} onClick={handleAccept}>
               <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
@@ -403,7 +405,7 @@ export default function GlobalSetting() {
           {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
         </MenuItem>
       </Popover>
-      <AddDriver open={openAdd} setOpen={setOpenAdd} setData={setGlobalSettings} handleCloseMenu={handleCloseMenu} />
+      {/* <AddDriver open={openAdd} setOpen={setOpenAdd} setData={setGlobalSettings} handleCloseMenu={handleCloseMenu} /> */}
       <UpdateDriver
         element={selectedGlobalSetting}
         open={openUpdate}

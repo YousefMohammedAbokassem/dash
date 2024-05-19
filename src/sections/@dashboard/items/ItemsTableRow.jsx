@@ -2,7 +2,7 @@ import { IconButton, TableCell, TableRow } from '@mui/material';
 import React from 'react';
 import Iconify from 'src/components/iconify';
 
-const ItemsTableRow = ({element, handleOpenMenu}) => {
+const ItemsTableRow = ({ element, handleOpenMenu }) => {
   return (
     <>
       <TableRow sx={{ position: 'relative' }}>

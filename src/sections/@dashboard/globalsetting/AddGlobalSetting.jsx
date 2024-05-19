@@ -13,12 +13,14 @@ import {
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const rule = ['admin', 'super'];
 
 const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
+  const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -56,19 +58,32 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
       formData.append('key', values.key);
       formData.append('value', values.value);
 
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/settings`, formData, {
           headers: headerApi(token),
         })
         .then((res) => {
           setLoading(false);
-          console.log(res);
           setSuccessMessage('Added Success');
-          setData((prev) => [...prev, res.data.data]);
+          let none = false;
+          setData((prev) => {
+            return prev.map((admin) => {
+              if (admin.id === res.data.data.id) {
+                none = true;
+                return {
+                  ...admin,
+                  key: values.key,
+                  value: values.value,
+                  // images: [...admin.images, { image: imageUrl }],
+                };
+              } else {
+                return admin;
+              }
+            });
+          });
+          if (!none) {
+            setData((prev) => [...prev, res.data.data]);
+          }
           handleClose();
         })
         .catch((error) => {
@@ -76,6 +91,9 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
             setErrorMessage(error.response.data.message);
           } else {
             setErrorMessage('Error, please try again');
+          }
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
           }
           setLoading(false);
         });
@@ -94,17 +112,24 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
         </DialogTitle>
         <form onSubmit={formik.handleSubmit}>
           <DialogContent>
-            <Grid container spacing={3} sx={{ marginTop: '20px' }}>
+            <Grid container spacing={3} sx={{ marginTop: '20px', minWidth: '400px' }}>
               <Grid item xs={12} md={6}>
                 <TextField
                   color="warning"
                   fullWidth
                   label="Key"
                   name="key"
+                  select
                   required
-                  value={formik.values.key}
                   onChange={formik.handleChange}
-                />
+                  value={formik.values.key}
+                >
+                  {['tax', 'commission', 'kmPrice'].map((element, index) => (
+                    <MenuItem key={index} value={element}>
+                      {element}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField

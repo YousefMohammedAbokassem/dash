@@ -12,12 +12,12 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handleCloseMenu, element }) => {
   const { token } = useSelector((state) => state.auth);
-  console.log(element);
   const handleClose = () => {
     setOpen(false);
     setErrorMessage('');
@@ -27,13 +27,12 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
       image: '',
     });
   };
-
+ const dispatch = useDispatch();
   const [values, setValues] = useState({
     name: '',
     description: '',
     image: '',
   });
-  // console.log(element?.images?.[0]);
 
   useEffect(() => {
     if (element) {
@@ -66,7 +65,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
   const handleSelectFile = (e) => {
     // if (e.target.files && e.target.files[0]) {
     setSelectFile(e.target.files[0]);
-    console.log(e.target.files[0]);
     const selectedImage = e.target.files[0];
     const reader = new FileReader();
     // }
@@ -88,10 +86,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
     formData.append('image', selecteFile);
     formData.append('id', element.id);
     formData.append('_method', 'PUT');
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
-    console.log(imageUrl);
     axios
       .post(`${process.env.REACT_APP_API_URL}admin/settings/${element.id}`, formData, {
         headers: headerApi(token),
@@ -100,7 +94,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         setLoading(false);
         setOpen(false);
         handleCloseMenu();
-        console.log(globalSettings);
         setGlobalSettings((prev) =>
           prev.map((admin) =>
             admin.id === element.id
@@ -121,29 +114,17 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         );
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         if (error.response) {
           setErrorMessage(error.response.data.message);
         } else {
           setErrorMessage('Error, please try again');
         }
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
+          }
       });
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-  //       headers: headerApi(token),
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       setCategories(res.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
   return (
     <>
       <Dialog

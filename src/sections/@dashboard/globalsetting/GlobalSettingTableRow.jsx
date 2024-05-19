@@ -10,7 +10,6 @@ const CategoryTableRow = ({ globalSetting, handleOpenMenu, mainPage }) => {
   //   }
   // };
   const navigate = useNavigate();
-  console.log(globalSetting);
   return (
     <TableRow
       hover
@@ -27,7 +26,11 @@ const CategoryTableRow = ({ globalSetting, handleOpenMenu, mainPage }) => {
         {/* </Stack> */}
       </TableCell>
 
-      <TableCell align="left">{globalSetting?.value}%</TableCell>
+      <TableCell align="left">
+        {globalSetting?.key === 'tax' || globalSetting?.key === 'commission'
+          ? `${globalSetting?.value}%`
+          : globalSetting?.value}
+      </TableCell>
 
       <TableCell align="right">
         <IconButton

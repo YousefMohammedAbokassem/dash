@@ -10,7 +10,6 @@ const CategoryTableRow = ({ globalSetting, handleOpenMenu, mainPage }) => {
   //   }
   // };
   const navigate = useNavigate();
-  console.log(globalSetting);
   return (
     <TableRow
       hover

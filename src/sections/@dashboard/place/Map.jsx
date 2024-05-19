@@ -7,10 +7,14 @@ const containerStyle = {
   height: '100%',
 };
 
-const Map = ({ markerPosition, setMarkerPosition, center }) => {
+const Map = ({ markerPosition, setMarkerPosition }) => {
+  const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [showMap, setShowMap] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
-  //initial google map
+  const [errorMessage, setErrorMessage] = useState('');
+  const errorRef = useRef(null);
+
+  // Initialize Google Map
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.REACT_APP_GOOLEMAP_KEY,
@@ -18,11 +22,10 @@ const Map = ({ markerPosition, setMarkerPosition, center }) => {
 
   const [map, setMap] = useState(null);
   const onLoad = useCallback(function callback(map) {
-    map.setZoom(7);
+    map.setZoom(14);
     setMap(map);
 
     const listener = map.addListener('click', (event) => {
-      // استدعاء دالة لجلب اسم المحافظة باستخدام الإحداثيات
       getProvinceName(event.latLng.lat(), event.latLng.lng());
       setMarkerPosition({
         lat: event.latLng.lat(),
@@ -39,60 +42,53 @@ const Map = ({ markerPosition, setMarkerPosition, center }) => {
     setMap(null);
   }, []);
 
-  //add marker to get lat and lng
-
-  const [errorMessage, setErrorMessage] = useState('');
-  const errorRef = useRef(null);
   useEffect(() => {
     errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [errorMessage]);
 
-  // دالة لجلب اسم المحافظة باستخدام الإحداثيات
+  // Function to get the current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      console.log(navigator.geolocation, 'asd');
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log(position.coords.latitude, 'latitude');
+          console.log(position.latitude, 'latitude');
+          console.log(position.coords, 'latitude');
+          console.log(position.coords.longitude, 'longitude');
+          setCenter({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          setErrorMessage('Error fetching current location');
+        }
+      );
+    } else {
+      setErrorMessage('Geolocation is not supported by this browser.');
+    }
+  }, []);
+
   const getProvinceName = async (lat, lng) => {
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=en&key=${process.env.REACT_APP_GOOLEMAP_KEY}`
       );
       const data = await response.json();
-      // const addressComponents = data[0].address_components;
-      console.log(data);
-      console.log(data.results[0].address_components);
       const addressComponents = data.results[0].address_components;
       const cityComponent = addressComponents.find((component) =>
         component.types.includes('administrative_area_level_1')
       );
-      // const addressComponents = data.results[0].address_components;
-      // const cityComponent = addressComponents.find((component) => {
-      //   component.types[0].includes('administrative_area_level_1');
-      //   console.log(component.types[0].includes('administrative_area_level_1'));
-      // });
       if (cityComponent) {
         console.log(cityComponent.long_name);
       }
-      /* 
-          geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-        if (status === 'OK' && results[0]) {
-
-          if (cityComponent) {
-            const cityName = cityComponent.long_name;
-            console.log('City Name:', cityName);
-          } else {
-            console.log('City Name not found');
-          }
-        } else {
-          console.log('Reverse geocoding failed');
-        }
-      });
-      */
       if (data.results[0]) {
-        const provinceName = data.results[0].formatted_address; // تستطيع استخدام data.results[0].address_components لتفاصيل أكثر دقة
-        console.log('Province Name:', provinceName);
-        // هنا يمكنك فعل شيء آخر مثل عرض اسم المحافظة في واجهة المستخدم
+        const provinceName = data.results[0].formatted_address;
       } else {
         setErrorMessage('Province not found');
       }
     } catch (error) {
-      console.error('Error fetching province:', error);
       setErrorMessage('Error fetching province');
     }
   };

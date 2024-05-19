@@ -5,7 +5,6 @@ import moment from 'moment';
 const IntervalsTableRow = ({ element, handleOpenMenu }) => {
   // const time = '12:00:00';
   // const formattedTime = moment(time, 'HH:mm:ss').format('hh:mm:ss a');
-  // console.log(formattedTime); // ستظهر النتيجة بالشكل المناسب مثل '12:00:00 ص'
   return (
     <>
       <TableRow sx={{ position: 'relative' }}>

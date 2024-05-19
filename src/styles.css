@@ -43,4 +43,10 @@
   background-color: #e69005 !important;
 }
 
-
+.MuiPickersYear-yearButton.Mui-selected {
+  background-color: #e69005 !important;
+}
+::selection {
+  background-color: #e69005 !important;
+  color: #fff;
+}

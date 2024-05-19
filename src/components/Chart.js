@@ -14,6 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SkeletonCharts from './SkeletonCharts';
+import moment from 'moment';
 const chartSetting = {
   // yAxis: [{ label: 'rainfall (mm)' }],
   height: 300,
@@ -225,7 +226,6 @@ export default function GridDemo() {
       setDataSet(res.data);
       // setStat(res.data.statistics);
       const arr = res.data.statistics;
-      console.log(res.data.statistics[0]);
 
       if (res.data.statistics[0] != undefined) {
         setStat(
@@ -233,15 +233,11 @@ export default function GridDemo() {
             prev //[a,b] [c,d]
           ) =>
             prev.map((ele) => {
-              console.log(res.data.statistics);
               let data = {};
-              // console.log(ele.month, 'eeeeeeeeeeeeeeeeeeee  ');
               res.data.statistics.forEach((elementFromFetch) => {
-                console.log(elementFromFetch, 'hhhhhhhhhhhhhhhhhhhhhhhhhhh  ');
                 if (ele?.month === elementFromFetch?.month) {
                   data = elementFromFetch;
                 } else {
-                  console.log(ele);
                   data = ele;
                 }
               });
@@ -318,7 +314,6 @@ export default function GridDemo() {
       if (err.response.status === 401) {
         dispatch(logoutUser());
 
-        console.log(err);
       }
     }
     setSelectedYear('');
@@ -328,10 +323,8 @@ export default function GridDemo() {
   const [selectedYear, setSelectedYear] = useState('');
 
   const handleYearChange = (date) => {
-    console.log(date.$y);
     setSelectedYear(date.$y);
   };
-  console.log(selectedYear);
   useEffect(() => {
     fetchData();
   }, []);
@@ -355,6 +348,7 @@ export default function GridDemo() {
   if (showUser) {
     series.push({ dataKey: 'userCount', label: 'Users', valueFormatter, color: '#E69005' });
   }
+  // const minDate = new Date(2000, 0, 1);
 
   return (
     <>
@@ -393,7 +387,26 @@ export default function GridDemo() {
         /> */}
           <Grid sx={{ display: 'flex', gap: '5px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker views={['year']} label="Select Year" onChange={handleYearChange} />
+              <DatePicker
+                views={['year']}
+                label="Select Year"
+                onChange={handleYearChange}
+                color="warning"
+                sx={{
+                  '& .MuiButtonBase-root': {
+                    backgroundColor: 'warning.main', // لون خلفية زر الفتح
+                    color: '#fff', // لون نص التسمية عند التركيز
+                    // الأنماط الأخرى لزر الفتح هنا...
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'warning.main', // لون نص التسمية عند التركيز
+                  },
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'warning.main', // لون الحدود عند تعيين color="warning"
+                  },
+                  // الأنماط الأخرى لـ DatePicker هنا...
+                }}
+              />
             </LocalizationProvider>
 
             <Grid item>

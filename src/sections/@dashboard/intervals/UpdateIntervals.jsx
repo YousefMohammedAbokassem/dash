@@ -13,34 +13,32 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import { logoutUser } from 'src/store/authSlice';
 
 const UpdateIntervals = ({ open, handleClose, setData, element }) => {
   const { token } = useSelector((state) => state.auth);
-
-  console.log(element, 'ele');
+  console.log(element);
   const [city, setCity] = useState([]);
   const [city_id, setCity_Id] = useState([]);
-  // const eleFrom = moment(element.from, 'HH:mm:ss').format('hh:mm:ss a');
-  // const eleTo = moment(element.to, 'HH:mm:ss').format('hh:mm:ss a');
-  // console.log(eleFrom); // ستظهر النتيجة بالشكل المناسب مثل '12:00:00 ص'
-  // console.log(eleTo); // ستظهر النتيجة بالشكل المناسب مثل '12:00:00 ص'
+  const dispatch = useDispatch();
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}admin/governorates`, {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res);
         setCity(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   }, []);
   const formik = useFormik({
@@ -55,6 +53,7 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
       // eleTo: '',
     },
     onSubmit: (values) => {
+      console.log(values);
       setLoading(true);
       const formData = new FormData();
       formData.append('from', values.from);
@@ -63,16 +62,12 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
       formData.append('_method', 'PUT');
       formData.append('price', values.price);
       formData.append('governorate_id', values.governorate_id);
-      console.log(element.id,"id");
-      console.log(values.governorate_id, 'governorate_id');
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/deliveryPrices/${element.id}`, formData, {
           headers: headerApi(token),
         })
         .then((res) => {
-          // console.log(res);
           setLoading(false);
-          // setSuccessMessage('Updated Successfuly');
           handleClose();
           setData((prev) =>
             prev.map((admin) =>
@@ -80,7 +75,11 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                 ? {
                     ...admin,
                     price: values.price,
-                    id: values.governorate_id,
+                    governorate: {
+                      id: values?.governorate_id,
+                      name: values?.governorateName,
+                    },
+
                     to: values.to,
                     from: values.from,
                   }
@@ -89,18 +88,14 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
           );
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setErrorMessage('Error please try again');
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
+          }
         });
     },
   });
-  // const currentDate = dayjs().set('hour', 14).set('minute', 10);
-  // const formattedDateTime = currentDate.format('YYYY-MM-DDTHH:mm');
-
-  // console.log(formattedDateTime); // سيتم طباعة التاريخ والوقت الحالي بالساعة 2:10 بالنظام المطلوب
-  // console.log(from, 'fromfromfromfromfromfrom');
-
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -124,7 +119,6 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [successMessage, setSuccessMessage] = useState('');
-  console.log(formik.values.from);
   return (
     <>
       <Dialog
@@ -150,7 +144,6 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                     required
                     // onChange={formik.handleChange}
                     onChange={(value) => {
-                      console.log(dayjs(value.$d).format('HH:mm:ss'));
                       formik.setFieldValue('from', dayjs(value.$d).format('HH:mm:ss'));
                     }}
                   />
@@ -166,7 +159,6 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                     sx={{ width: '100%' }}
                     // onChange={formik.handleChange}
                     onChange={(value) => {
-                      console.log(dayjs(value.$d).format('HH:mm:ss'));
                       formik.setFieldValue('to', dayjs(value.$d).format('HH:mm:ss'));
                     }}
                     label="to"
@@ -184,7 +176,13 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                   select
                   required
                   value={formik.values.governorate_id}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const selectedGovernorate = city.find((gov) => gov.id === e.target.value);
+                    console.log(selectedGovernorate.name,"Aaaaaaaaaaaaaaaaaaaaaaa");
+                    formik.setFieldValue('governorate_id', e.target.value);
+                    formik.setFieldValue('governorateName', selectedGovernorate.name);
+                    console.log(e);
+                  }}
                   // value={city_id.target.value}
                 >
                   {city.map((element, index) => (

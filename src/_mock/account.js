@@ -6,7 +6,7 @@ const useAccount = () => {
   const realAdmin = JSON.parse(admin);
   const account = {
     displayName: realAdmin.name || `name`,
-    email: realAdmin.phone | `phone`,
+    phone: realAdmin.phone | `phone`,
     // photoURL: `${process.env.REACT_APP_API_URL_IMAGE}${admin.image}`
     photoURL: ``,
   };

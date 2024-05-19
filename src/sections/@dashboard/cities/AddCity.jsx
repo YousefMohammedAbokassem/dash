@@ -3,7 +3,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextFi
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const AddCity = ({ open, setOpen, setData }) => {
@@ -38,13 +39,16 @@ const AddCity = ({ open, setOpen, setData }) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setErrorMessage(error.response.data.message);
           setSuccessMessage('');
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
+          }
         });
     },
   });
+  const dispatch = useDispatch();
 
   return (
     <>

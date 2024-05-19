@@ -2,7 +2,8 @@ import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const DeleteIntervals = ({ open, handleClose, setData, id, setAnchorEl }) => {
@@ -23,11 +24,13 @@ const DeleteIntervals = ({ open, handleClose, setData, id, setAnchorEl }) => {
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
         setDeleteLoading(false);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   };
-
+  const dispatch = useDispatch();
   return (
     <>
       <Dialog

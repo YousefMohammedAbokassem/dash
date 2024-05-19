@@ -3,7 +3,8 @@ import { Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle, 
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selectedId }) => {
@@ -49,13 +50,15 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
           } else {
             setErrorMessage('Error, please try again');
           }
-          console.log(error);
           setLoading(false);
           setSuccessMessage('');
+          if (error.response.status === 401) {
+            dispatch(logoutUser());
+          }
         });
     },
   });
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -63,7 +66,6 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
       });
     }
   }, [element, formik.setValues]);
-  console.log(errorMessage);
   return (
     <>
       <Dialog

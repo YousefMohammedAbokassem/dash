@@ -32,7 +32,6 @@ const City = () => {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log(res);
         setCity(res.data.data);
         setLoadingCity(false);
       })
@@ -40,7 +39,6 @@ const City = () => {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
         setLoadingCity(false);
       });
   }, []);

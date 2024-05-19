@@ -2,7 +2,7 @@ import { Button, Container, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Iconify from 'src/components/iconify';
 import SkeletonCopm from 'src/components/skeleton-comp';
 import SkeletonTable from 'src/components/SkeletonTabel';
@@ -10,6 +10,7 @@ import AddPlace from 'src/sections/@dashboard/place/AddPlace';
 import DeletePlace from 'src/sections/@dashboard/place/DeletePlace';
 import PlaceCard from 'src/sections/@dashboard/place/PlaceCard';
 import UpdatePlace from 'src/sections/@dashboard/place/UpdatePlace';
+import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
 
 const Place = () => {
@@ -32,11 +33,13 @@ const Place = () => {
         setPlaces(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   }, [token]);
-
+  const dispatch = useDispatch();
   // Handle Add
   const [openAdd, setOpenAdd] = useState(false);
 

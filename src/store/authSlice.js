@@ -109,10 +109,8 @@ const authReducer = createSlice({
       }
     });
     builder.addCase(login.rejected, (state, action) => {
-      console.log(action);
-      console.log(action.payload.response.data.error);
       if (action.payload.response) {
-        state.error = action.payload.response.data.error;
+        state.error = action.payload.response.data.message;
       } else {
         state.error = 'Error, please try again';
       }

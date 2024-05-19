@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
@@ -22,6 +22,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker';
+import { logoutUser } from 'src/store/authSlice';
 
 const AddIntervals = ({ open, setOpen, setData }) => {
   const { token } = useSelector((state) => state.auth);
@@ -81,11 +82,14 @@ const AddIntervals = ({ open, setOpen, setData }) => {
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
         setErrorMessage(error.response.data.message);
         setLoading(false);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
       });
   };
+  const dispatch = useDispatch();
 
   // show cities as menu items
   const [city, setCity] = useState([]);
@@ -99,9 +103,7 @@ const AddIntervals = ({ open, setOpen, setData }) => {
       .then((res) => {
         setCity(res.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
   const [name, setName] = useState('');
   const [from, setFrom] = useState('00:00:00');
