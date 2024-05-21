@@ -10,6 +10,7 @@ const CategoryTableRow = ({ globalSetting, handleOpenMenu, mainPage }) => {
   //   }
   // };
   const navigate = useNavigate();
+  console.log(globalSetting);
   return (
     <TableRow
       hover
@@ -43,6 +44,13 @@ const CategoryTableRow = ({ globalSetting, handleOpenMenu, mainPage }) => {
         {/* <Stack direction="row" alignItems="center" spacing={2}> */}
         <Typography variant="subtitle2" noWrap>
           {globalSetting?.plate_number}
+        </Typography>
+        {/* </Stack> */}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {/* <Stack direction="row" alignItems="center" spacing={2}> */}
+        <Typography variant="subtitle2" noWrap>
+          {globalSetting?.wallet_balance || `0`}
         </Typography>
         {/* </Stack> */}
       </TableCell>

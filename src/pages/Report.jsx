@@ -23,28 +23,25 @@ import {
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
-import { UserListHead } from '../sections/@dashboard/user';
+import { UserListHead } from '../sections/@dashboard/user'; 
 // mock
 import USERLIST from '../_mock/user';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import SkeletonTabel from 'src/components/SkeletonTabel';
-import AddDriver from 'src/sections/@dashboard/driver/AddDriver';
-import DriverTableRow from 'src/sections/@dashboard/driver/DriverTableRow';
-import UpdateDriver from 'src/sections/@dashboard/driver/UpdateDriver';
+import AddCategory from 'src/sections/@dashboard/category/AddCategory';
+import CategoryTableRow from 'src/sections/@dashboard/report/CategoryTableRow';
 import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
+import UpdateCategory from 'src/sections/@dashboard/category/UpdateCategory';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'gender', label: 'Gender', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'car_type', label: 'Car_Type', alignRight: false },
-  { id: 'plate_number', label: 'Plate_Number', alignRight: false },
-  { id: 'wallet_balance', label: 'wallet_balance', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
+  { id: 'total_price', label: 'total_price', alignRight: false },
+  { id: 'commission', label: 'commission', alignRight: false },
+  { id: 'tax', label: 'tax', alignRight: false },
+  { id: 'driverFee', label: 'driverFee', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -78,7 +75,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function GlobalSetting() {
+export default function Category() {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(null);
@@ -99,10 +96,10 @@ export default function GlobalSetting() {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpenMenu = (event, globalSetting, id) => {
+  const handleOpenMenu = (event, category, id) => {
     event.stopPropagation();
     setSelectedList(id);
-    setSelectedGlobalSetting(globalSetting);
+    setSelectedCategory(category);
     setAnchorEl(event.currentTarget);
   };
 
@@ -145,107 +142,43 @@ export default function GlobalSetting() {
   // mu update
   const { token } = useSelector((state) => state.auth);
 
-  const [globalSettings, setGlobalSettings] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [loadingData, setLoadingData] = useState(false);
 
-  // const [openAdd, setOpenAdd] = useState(false);
+  const [OpenAdd, setOpenAdd] = useState(false);
 
   //handle delete admin
-
   const [deleteLoading, setDeleteLoading] = useState(false);
+
   const [selectedList, setSelectedList] = useState('');
   const handleDeleteAdmin = () => {
     setDeleteLoading(true);
     axios
-      .delete(`${process.env.REACT_APP_API_URL}admin/drivers/${selectedList}`, {
+      .delete(`${process.env.REACT_APP_API_URL}admin/categories/${selectedList}`, {
         headers: headerApi(token),
       })
       .then((res) => {
         setDeleteLoading(false);
-        setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
+        setCategories((prev) => prev.filter((el) => el.id !== selectedList));
         handleCloseMenu();
-        // fetchData();
       })
       .catch((error) => {
-        if (error.response.status === 401) {
-          dispatch(logoutUser());
-        }
         setDeleteLoading(false);
-      });
-  };
-  //handle accept driver
-
-  const [acceptLoading, setAcceptLoading] = useState(false);
-  const handleAccept = () => {
-    setAcceptLoading(true);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}admin/drivers/${selectedList}/acceptRequest`,
-        {},
-        {
-          headers: headerApi(token),
-        }
-      )
-      .then((res) => {
-        setAcceptLoading(false);
-        setGlobalSettings((prev) =>
-          prev.map((el) => {
-            if (el.id === selectedList) {
-              return {
-                ...el,
-                status: res.data.data.status,
-              };
-            } else {
-              return el;
-            }
-          })
-        );
-        handleCloseMenu();
-        // fetchData();
-      })
-      .catch((error) => {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        setAcceptLoading(false);
-      });
-  };
-  //handle reject driver
-
-  const [rejectLoading, setRejectLoading] = useState(false);
-  const handleReject = () => {
-    setRejectLoading(true);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}admin/drivers/${selectedList}/rejectRequest`,
-        {},
-        {
-          headers: headerApi(token),
-        }
-      )
-      .then((res) => {
-        setRejectLoading(false);
-        setGlobalSettings((prev) => prev.filter((el) => el.id !== selectedList));
-        handleCloseMenu();
-        // fetchData();
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          dispatch(logoutUser());
-        }
-        setRejectLoading(false);
       });
   };
   const fetchData = () => {
     setLoadingData(true);
     axios
       // .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-      .get(`${process.env.REACT_APP_API_URL}admin/drivers`, {
+      .get(`${process.env.REACT_APP_API_URL}admin/trips/report`, {
         headers: headerApi(token),
       })
       .then((res) => {
-        setGlobalSettings(res.data.data);
+        setCategories(res.data.data);
         setLoadingData(false);
       })
       .catch((error) => {
@@ -262,7 +195,7 @@ export default function GlobalSetting() {
   // handle update
   const [openUpdate, setOpenUpdate] = useState(false);
 
-  const [selectedGlobalSetting, setSelectedGlobalSetting] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState({});
 
   const handleUpdate = () => {
     setOpenUpdate(true);
@@ -270,25 +203,10 @@ export default function GlobalSetting() {
   return (
     <>
       <Helmet>
-        <title> Drivers </title>
+        <title> Categories </title>
       </Helmet>
 
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom color={'warning.main'}>
-            Drivers
-          </Typography>
-          {/* <Button
-            onClick={() => setOpenAdd(true)}
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            color={'warning'}
-            sx={{ color: '#fff' }}
-          >
-            New Driver
-          </Button> */}
-        </Stack>
-
+      <>   
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -297,7 +215,7 @@ export default function GlobalSetting() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={globalSettings.length}
+                  rowCount={categories.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -306,18 +224,16 @@ export default function GlobalSetting() {
                   {loadingData ? (
                     <SkeletonTabel number={4} />
                   ) : (
-                    globalSettings
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((globalSetting, index) => {
-                        return (
-                          <DriverTableRow
-                            mainPage={true}
-                            globalSetting={globalSetting}
-                            key={index}
-                            handleOpenMenu={handleOpenMenu}
-                          />
-                        );
-                      })
+                    categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((category, index) => {
+                      return (
+                        <CategoryTableRow
+                          mainPage={true}
+                          category={category}
+                          key={index}
+                          handleOpenMenu={handleOpenMenu}
+                        />
+                      );
+                    })
                   )}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
@@ -356,14 +272,14 @@ export default function GlobalSetting() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={globalSettings.length}
+            count={categories.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-      </Container>
+      </>
 
       <Popover
         open={Boolean(anchorEl)}
@@ -385,34 +301,21 @@ export default function GlobalSetting() {
       >
         <MenuItem onClick={handleUpdate}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Update Global Setting
+          Update Category
         </MenuItem>
-        {selectedGlobalSetting?.status === 'pending' ? (
-          <>
-            <MenuItem sx={{ color: 'primary.main' }} onClick={handleAccept}>
-              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-              {acceptLoading ? <CircularProgress size={20} /> : 'Accept'}
-            </MenuItem>
-            <MenuItem sx={{ color: 'error.main' }} onClick={handleReject}>
-              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-              {rejectLoading ? <CircularProgress size={20} /> : 'Reject'}
-            </MenuItem>
-          </>
-        ) : (
-          ''
-        )}
+
         <MenuItem sx={{ color: 'error.main' }} onClick={handleDeleteAdmin}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
         </MenuItem>
       </Popover>
-      {/* <AddDriver open={openAdd} setOpen={setOpenAdd} setData={setGlobalSettings} handleCloseMenu={handleCloseMenu} /> */}
-      <UpdateDriver
-        element={selectedGlobalSetting}
+      <AddCategory open={OpenAdd} setOpen={setOpenAdd} setData={setCategories} handleCloseMenu={handleCloseMenu} />
+      <UpdateCategory
+        element={selectedCategory}
         open={openUpdate}
         setOpen={setOpenUpdate}
-        setGlobalSettings={setGlobalSettings}
-        globalSettings={globalSettings}
+        setCategories={setCategories}
+        categories={categories}
         handleCloseMenu={handleCloseMenu}
       />
     </>

@@ -88,6 +88,8 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
     formData.append('image', selecteFile);
     formData.append('id', element.id);
     formData.append('_method', 'PUT');
+      formData.append('is_special', 1);
+
     for (var pair of formData.entries()) {
       console.log(pair[0] + ', ' + pair[1]);
     }

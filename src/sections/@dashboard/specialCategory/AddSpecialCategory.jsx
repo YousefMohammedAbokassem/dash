@@ -57,6 +57,7 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
       formData.append('name', values.name);
       formData.append('description', values.description);
       formData.append('image', selecteFile);
+      formData.append('is_special', 1);
 
       for (var pair of formData.entries()) {
         console.log(pair[0] + ', ' + pair[1]);

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Button } from '@mui/material';
 // components
 // import { OverviewBudget } from 'src/sections/@dashboard/overView/overview-budget';
 // import { OverviewTotalCustomers } from 'src/sections/@dashboard/overView/overview-total-customers';
@@ -12,14 +12,64 @@ import { Grid, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import Chart from 'src/components/Chart';
+import Report from './Report';
+// import Chart from 'src/components/Chart';
 import { headerApi } from 'src/utils/headerApi';
 import { logoutUser } from 'src/store/authSlice';
-import Chart from 'src/components/Chart';
-// import Chart from 'src/components/Chart';
-
+import { saveAs } from 'file-saver';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const downloadReport = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}admin/trips/report/export`, {
+        headers: headerApi(token),
+        responseType: 'blob', // تأكد من تحديد نوع الاستجابة كـ 'blob'
+      });
+
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(blob, 'report.xlsx');
+
+      handleClose();
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        dispatch(logoutUser());
+      }
+    }
+  };
+  const downloadTaxesReport = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}admin/trips/texes/report/export`, {
+        headers: headerApi(token),
+        responseType: 'blob', // تأكد من تحديد نوع الاستجابة كـ 'blob'
+      });
+
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(blob, 'taxesReport.xlsx');
+
+      handleClose();
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        dispatch(logoutUser());
+      }
+    }
+  };
   return (
     <>
       <Helmet>
@@ -32,28 +82,61 @@ export default function DashboardAppPage() {
         </Typography>
 
         <Grid container spacing={3}>
-          {/* <Grid item xs={12} sm={6} lg={3}>
-            <OverviewBudget difference={12} positive sx={{ height: '100%' }} value="$24k" orders={orders} />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <OverviewTotalCustomers
-              orders={ordersOne}
-              difference={16}
-              positive={false}
-              sx={{ height: '100%' }}
-              value="1.6k"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <OverviewTasksProgress users={users} sx={{ height: '100%' }} value={75.5} />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <OverviewTotalProfit users={usersOne} sx={{ height: '100%' }} value="$15k" />
-          </Grid> */}
           <Grid item xs={12}>
             <Chart />
           </Grid>
-          <Grid item xs={12}></Grid>
+          <Grid item xs={12}>
+            <Report />
+          </Grid>
+          <Grid item xs={12} justifyContent={'space-between'} display={'flex'}>
+            <Button
+              id="fade-button"
+              aria-controls={open ? 'fade-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+              variant="contained"
+              color="warning"
+              sx={{ color: '#fff' }}
+              size={'large'}
+            >
+              Download
+            </Button>
+            <Menu
+              id="fade-menu"
+              MenuListProps={{
+                'aria-labelledby': 'fade-button',
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  downloadReport();
+                }}
+                color="warning.main"
+              >
+                Report
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  downloadTaxesReport();
+                }}
+              >
+                Taxes Report
+              </MenuItem>
+            </Menu>
+          </Grid>
         </Grid>
       </Container>
     </>
