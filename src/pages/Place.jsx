@@ -118,7 +118,7 @@ const Place = () => {
           )}
         </div>
       </Container>
-      <AddPlace open={openAdd} setOpenAdd={setOpenAdd} setData={setPlaces} handleClose={handleClose} />
+      <AddPlace open={openAdd} setOpenAdd={setOpenAdd} setData={setPlaces} handleCloseMenu={handleClose} />
       <DeletePlace open={openDelete} handleClose={handleCloseDelete} id={selectedDelete} setData={setPlaces} />
       <UpdatePlace
         onUpdateSuccess={handleUpdateSuccess}

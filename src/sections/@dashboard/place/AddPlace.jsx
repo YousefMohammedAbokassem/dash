@@ -17,14 +17,39 @@ import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import Map from './Map';
 import { logoutUser } from 'src/store/authSlice';
+import useGeolocation from 'src/components/useLocation';
 
 const rule = ['admin', 'super'];
-const center = {
-  lat: 33.50006,
-  lng: 36.2973314,
-};
 
 const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
+  const { center, markerPosition, setMarkerPosition, setErrorMessageMap, errorMessageMap, setCenter } =
+    useGeolocation();
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     console.log(navigator.geolocation, 'asd');
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setCenter({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //         setMarkerPosition({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //         console.log({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //       },
+  //       (error) => {
+  //         setErrorMessage('Error fetching current location');
+  //       }
+  //     );
+  //   } else {
+  //     setErrorMessage('Geolocation is not supported by this browser.');
+  //   }
+  // }, []);
   const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -109,7 +134,8 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
       });
   }, []);
   const dispatch = useDispatch();
-  const [markerPosition, setMarkerPosition] = useState(center);
+  // const [markerPosition, setMarkerPosition] = useState({});
+  console.log(markerPosition);
   return (
     <>
       <Dialog
@@ -177,7 +203,7 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
                 </TextField>
               </Grid>
               <Grid item xs={12} sx={{ height: '400px' }}>
-                <Map markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} center={center} />
+                <Map zoom={14} markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} center={center} />
               </Grid>
               <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                 <label htmlFor="file">

@@ -17,13 +17,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import Map from './Map';
 import { logoutUser } from 'src/store/authSlice';
-const center = {
-  lat: 33.50006,
-  lng: 36.2973314,
-};
 const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
   const { token } = useSelector((state) => state.auth);
-  const [markerPosition, setMarkerPosition] = useState(center);
+  const [markerPosition, setMarkerPosition] = useState({});
   // const [center, setCenter] = useState(center);
   const formik = useFormik({
     initialValues: {
@@ -66,6 +62,7 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
     },
   });
   const dispatch = useDispatch();
+  console.log(element);
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -187,7 +184,12 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
                 </TextField>
               </Grid>
               <Grid item xs={12} sx={{ height: '400px' }}>
-                <Map markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} center={markerPosition} />
+                <Map
+                  zoom={14}
+                  markerPosition={markerPosition}
+                  setMarkerPosition={setMarkerPosition}
+                  center={markerPosition}
+                />
               </Grid>
               <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                 <label htmlFor="file">

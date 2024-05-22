@@ -211,17 +211,8 @@ export default function ChangePhone() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+            Change Phone
           </Typography>
-          <Button
-            onClick={() => setOpenAdd(true)}
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            color={'warning'}
-            sx={{ color: '#fff' }}
-          >
-            New Category
-          </Button>
         </Stack>
 
         <Card>

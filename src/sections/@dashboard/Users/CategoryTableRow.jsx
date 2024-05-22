@@ -25,7 +25,6 @@ const CategoryTableRow = ({ category, handleOpenMenu, mainPage }) => {
         </Typography>
         {/* </Stack> */}
       </TableCell>
-      <TableCell align="left">{`${category.is_driver}`}</TableCell>
     </TableRow>
   );
 };

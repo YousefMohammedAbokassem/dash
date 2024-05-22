@@ -37,7 +37,6 @@ import { headerApi } from 'src/utils/headerApi';
 
 const TABLE_HEAD = [
   { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'is_Driver', label: 'is_Driver', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------

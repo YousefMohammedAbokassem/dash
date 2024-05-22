@@ -9,14 +9,18 @@ import UpdateCity from 'src/sections/@dashboard/cities/UpdateCity';
 import ItemsComp from 'src/sections/@dashboard/items/ItemsComp';
 import { headerApi } from 'src/utils/headerApi';
 import { logoutUser } from 'src/store/authSlice';
+import useGeolocation from 'src/components/useLocation';
 
 const City = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
+  const { center, markerPosition, setMarkerPosition, setErrorMessageMap, errorMessageMap, setCenter } =
+    useGeolocation();
 
   // Handle city
   const [loadingCity, setLoadingCity] = useState(false);
   const [city, setCity] = useState([]);
+  const [cityMap, setCityMap] = useState('');
 
   const [openAddCity, setOpenAddCity] = useState(false);
 
@@ -51,6 +55,8 @@ const City = () => {
     setAnchorEl(null);
   };
 
+  // const [markerPosition, setMarkerPosition] = useState({});
+  // const [center, setCenter] = useState({});
   return (
     <>
       <Helmet>
@@ -84,14 +90,30 @@ const City = () => {
           setAnchorEl={setAnchorEl}
         />
       </Container>
-      <AddCity open={openAddCity} setOpen={setOpenAddCity} setData={setCity} />
+      <AddCity
+        open={openAddCity}
+        setOpen={setOpenAddCity}
+        setData={setCity}
+        cityMap={cityMap}
+        setCityMap={setCityMap}
+        center={center}
+        setCenter={setCenter}
+        markerPosition={markerPosition}
+        setMarkerPosition={setMarkerPosition}
+      />
       <UpdateCity
         open={openUpdate}
         setOpen={setOpenUpdate}
         element={selectedElement}
         selectedId={selectedId}
         setData={setCity}
+        cityMap={cityMap}
+        setCityMap={setCityMap}
         handleCloseMenu={handleCloseMenu}
+        center={center}
+        setCenter={setCenter}
+        markerPosition={markerPosition}
+        setMarkerPosition={setMarkerPosition}
       />
       {/* End city */}
     </>

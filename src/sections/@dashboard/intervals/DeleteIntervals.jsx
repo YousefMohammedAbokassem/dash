@@ -40,7 +40,7 @@ const DeleteIntervals = ({ open, handleClose, setData, id, setAnchorEl }) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title" color="warning.main">
-          {'Delete Topic'}
+          {'Delete Interval'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

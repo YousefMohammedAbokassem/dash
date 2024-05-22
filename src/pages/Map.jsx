@@ -23,6 +23,7 @@ const ViewMap = () => {
         markerPosition={markerPosition}
         setMarkerPosition={setMarkerPosition}
         center={{ lat: parseFloat(lat), lng: parseFloat(lng) }}
+        zoom={14}
       />
     </>
   );

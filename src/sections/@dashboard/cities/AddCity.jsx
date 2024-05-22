@@ -2,12 +2,26 @@ import { LoadingButton } from '@mui/lab';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
-
-const AddCity = ({ open, setOpen, setData }) => {
+import Map from '../place/MapAdd';
+// const center = {
+//   lat: 33.50006,
+//   lng: 36.2973314,
+// };
+const AddCity = ({
+  open,
+  setOpen,
+  setData,
+  cityMap,
+  setCityMap,
+  markerPosition,
+  setMarkerPosition,
+  center,
+  setCenter,
+}) => {
   const { token } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -28,6 +42,7 @@ const AddCity = ({ open, setOpen, setData }) => {
     onSubmit: (values) => {
       setLoading(true);
       const formData = new FormData();
+      formData.append('cityMap', cityMap);
       formData.append('name', values.name);
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/governorates`, formData, {
@@ -49,7 +64,32 @@ const AddCity = ({ open, setOpen, setData }) => {
     },
   });
   const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setCenter({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //         setMarkerPosition({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //         console.log({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //       },
 
+  //       (error) => {
+  //         setErrorMessage('Error fetching current location');
+  //       }
+  //     );
+  //   } else {
+  //     setErrorMessage('Geolocation is not supported by this browser.');
+  //   }
+  // }, []);
   return (
     <>
       <Dialog
@@ -63,8 +103,8 @@ const AddCity = ({ open, setOpen, setData }) => {
             {'Add City'}
           </DialogTitle>
           <DialogContent>
-            <Grid container spacing={3} sx={{ marginTop: '20px' }}>
-              <Grid item>
+            <Grid container spacing={3} sx={{ marginTop: '0px' }}>
+              <Grid item xs={12}>
                 <TextField
                   color="warning"
                   fullWidth
@@ -73,6 +113,16 @@ const AddCity = ({ open, setOpen, setData }) => {
                   required
                   value={formik.values.name}
                   onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ height: '400px', width: '200px' }}>
+                <Map
+                  setCityMap={setCityMap}
+                  markerPosition={markerPosition}
+                  setMarkerPosition={setMarkerPosition}
+                  center={center}
+                  formik={formik}
+                  zoom={7}
                 />
               </Grid>
             </Grid>

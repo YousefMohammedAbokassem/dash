@@ -6,8 +6,21 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from 'src/store/authSlice';
 import { headerApi } from 'src/utils/headerApi';
-
-const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selectedId }) => {
+import Map from '../place/MapAdd';
+const UpdateCity = ({
+  open,
+  setData,
+  setOpen,
+  element,
+  handleCloseMenu,
+  selectedId,
+  cityMap,
+  setCityMap,
+  markerPosition,
+  setMarkerPosition,
+  center,
+  setCenter,
+}) => {
   const { token } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -21,6 +34,7 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
     onSubmit: (values) => {
       setLoading(true);
       const formData = new FormData();
+      formData.append('cityMap', cityMap);
       formData.append('name', values.name);
       formData.append('_method', 'PUT');
       axios
@@ -45,6 +59,7 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
           );
         })
         .catch((error) => {
+          console.log(error);
           if (error.response) {
             setErrorMessage(error.response.data.message);
           } else {
@@ -66,6 +81,7 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
       });
     }
   }, [element, formik.setValues]);
+  console.log(cityMap);
   return (
     <>
       <Dialog
@@ -80,7 +96,7 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
           </DialogTitle>
           <DialogContent>
             <Grid container spacing={3} sx={{ marginTop: '20px' }}>
-              <Grid item>
+              <Grid item xs={12}>
                 <TextField
                   color="warning"
                   fullWidth
@@ -88,7 +104,19 @@ const UpdateCity = ({ open, setData, setOpen, element, handleCloseMenu, selected
                   name="name"
                   required
                   value={formik.values.name}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.setFieldValue('name', e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ height: '400px', width: '200px' }}>
+                <Map
+                  setCityMap={setCityMap}
+                  markerPosition={markerPosition}
+                  setMarkerPosition={setMarkerPosition}
+                  center={center}
+                  formik={formik}
+                  zoom={7}
                 />
               </Grid>
             </Grid>
