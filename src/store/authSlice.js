@@ -40,11 +40,10 @@ export const logout = createAsyncThunk('logout/logoutUser', (_, { getState, reje
       }
     )
     .then((res) => {
-      console.log(res);
+
       return res.data;
     })
     .catch((error) => {
-      console.log(error);
       return rejectWithValue(error);
     });
 });
@@ -83,10 +82,7 @@ const authReducer = createSlice({
       state.admin = null;
     });
     builder.addCase(login.fulfilled, (state, action) => {
-      console.log(action.payload.message);
       if (action.payload.message === 'success') {
-        console.log(action.payload);
-        console.log(action);
         state.loading = false;
         state.error = '';
         state.authenticate = true;

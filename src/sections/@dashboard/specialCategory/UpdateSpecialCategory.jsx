@@ -17,7 +17,6 @@ import { headerApi } from 'src/utils/headerApi';
 
 const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMenu, element }) => {
   const { token } = useSelector((state) => state.auth);
-  console.log(element);
   const handleClose = () => {
     setOpen(false);
     setErrorMessage('');
@@ -33,7 +32,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
     description: '',
     image: '',
   });
-  // console.log(element?.images?.[0]);
 
   useEffect(() => {
     if (element) {
@@ -66,7 +64,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
   const handleSelectFile = (e) => {
     // if (e.target.files && e.target.files[0]) {
     setSelectFile(e.target.files[0]);
-    console.log(e.target.files[0]);
     const selectedImage = e.target.files[0];
     const reader = new FileReader();
     // }
@@ -92,10 +89,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
     formData.append('_method', 'PUT');
     formData.append('is_special', 1);
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
-    console.log(imageUrl);
     axios
       .post(`${process.env.REACT_APP_API_URL}admin/categories/${element.id}`, formData, {
         headers: headerApi(token),
@@ -104,7 +97,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
         setLoading(false);
         setOpen(false);
         handleCloseMenu();
-        console.log(categories);
         setCategories((prev) =>
           prev.map((admin) =>
             admin.id === element.id
@@ -126,7 +118,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
         setErrorMessage('');
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         if (error.response) {
           setErrorMessage(error.response.data.message);
@@ -135,20 +126,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
         }
       });
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-  //       headers: headerApi(token),
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       setCategories(res.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
   return (
     <>
       <Dialog

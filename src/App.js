@@ -10,8 +10,8 @@ import ThemeProvider from './theme';
 // import { StyledChart } from './components/chartt';
 import ScrollToTop from './components/scroll-to-top';
 import './styles.css';
-import { ApiProvider } from '@reduxjs/toolkit/dist/query/react';
-import { apiSlice } from './features/api/apiSlice';
+// import { ApiProvider } from '@reduxjs/toolkit/dist/query/react';
+// import { apiSlice } from './features/api/apiSlice';
 
 // ----------------------------------------------------------------------
 
@@ -19,15 +19,15 @@ export default function App() {
   return (
     <HelmetProvider>
       <HashRouter>
-          <ApiProvider api={apiSlice}>
+        {/* <ApiProvider api={apiSlice}> */}
         <Provider store={store}>
-            <ThemeProvider>
-              <ScrollToTop />
-              {/* <StyledChart /> */}
-              <Router />
-            </ThemeProvider>
+          <ThemeProvider>
+            <ScrollToTop />
+            {/* <StyledChart /> */}
+            <Router />
+          </ThemeProvider>
         </Provider>
-          </ApiProvider>
+        {/* </ApiProvider> */}
       </HashRouter>
     </HelmetProvider>
   );

@@ -180,7 +180,7 @@ export default function Category() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Users</title>
       </Helmet>
 
       <Container>

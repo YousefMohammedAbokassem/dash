@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client';
 
 //
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+// import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 
 // ----------------------------------------------------------------------
@@ -13,5 +13,5 @@ root.render(
     <App />
 );
 
-serviceWorker.unregister();
+// serviceWorker.unregister();
 reportWebVitals();

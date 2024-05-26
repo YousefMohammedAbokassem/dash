@@ -16,7 +16,6 @@ const useGeolocation = () => {
           };
           setCenter(newCenter);
           setMarkerPosition(newCenter);
-          console.log(newCenter);
         },
         (error) => {
           setErrorMessageMap('Error fetching current location');

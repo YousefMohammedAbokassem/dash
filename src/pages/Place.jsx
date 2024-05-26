@@ -95,7 +95,7 @@ const Place = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill,minmax(350px,1fr))',
+            gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))',
             justifyContent: 'center',
             alignItems: 'center',
             gap: '30px',

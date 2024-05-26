@@ -15,8 +15,14 @@ const PlaceCard = ({ element, setDelete, setOpenDelete, setSelectedUpdate, setOp
   };
   return (
     // <Card sx={{ width: 345 }}>
-    <Card sx={{ width: '100%' }}>
-      <CardMedia sx={{ height: 300 }} image={element.images[0]?.path || '/assets/preview.jpg'} title={element.name} />
+    <Card
+      sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+    >
+      <CardMedia
+        sx={{ height: 200, backgroundSize: 'contain' }}
+        image={element.images[0]?.path || '/assets/preview.jpg'}
+        title={element.name}
+      />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           Name:{' '}

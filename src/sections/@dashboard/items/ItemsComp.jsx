@@ -19,8 +19,9 @@ import Iconify from 'src/components/iconify';
 import USERLIST from '../../../_mock/user';
 import SkeletonTable from 'src/components/SkeletonTabel';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
+import { logoutUser } from 'src/store/authSlice';
 
 const ItemsComp = ({
   loadingCity,
@@ -34,6 +35,7 @@ const ItemsComp = ({
   anchorEl,
 }) => {
   const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   //handle pagination
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -70,12 +72,13 @@ const ItemsComp = ({
       })
       .then((res) => {
         setDeleteLoading(false);
-        console.log(res);
         setCity((prev) => prev.filter((el) => el.id !== selectedId));
         setAnchorEl(null);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 401) {
+          dispatch(logoutUser());
+        }
         setDeleteLoading(false);
       });
   };

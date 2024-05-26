@@ -58,18 +58,12 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
       formData.append('description', values.description);
       formData.append('image', selecteFile);
 
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/categories`, formData, {
           headers: headerApi(token),
         })
         .then((res) => {
           setLoading(false);
-          console.log(res);
-          setSuccessMessage('Added Success');
           setData((prev) => [...prev, res.data.data]);
           handleClose();
         })

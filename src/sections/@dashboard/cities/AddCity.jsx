@@ -64,32 +64,7 @@ const AddCity = ({
     },
   });
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setCenter({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //         setMarkerPosition({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //         console.log({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //       },
 
-  //       (error) => {
-  //         setErrorMessage('Error fetching current location');
-  //       }
-  //     );
-  //   } else {
-  //     setErrorMessage('Geolocation is not supported by this browser.');
-  //   }
-  // }, []);
   return (
     <>
       <Dialog

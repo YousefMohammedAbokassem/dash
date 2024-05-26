@@ -126,19 +126,6 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
       });
   };
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-  //       headers: headerApi(token),
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       setCategories(res.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
   return (
     <>
       <Dialog

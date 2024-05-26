@@ -32,7 +32,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
     description: '',
     image: '',
   });
-  // console.log(element?.images?.[0]);
 
   useEffect(() => {
     if (element) {
@@ -116,20 +115,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         }
       });
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-  //       headers: headerApi(token),
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       setCategories(res.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
   return (
     <>
       <Dialog
@@ -143,7 +128,7 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3} sx={{ marginTop: '20px' }}>
-          {/*   <Grid item xs={12} md={6}>
+            {/*   <Grid item xs={12} md={6}>
               <TextField
                 color="warning"
                 fullWidth
@@ -171,7 +156,7 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
               </TextField>
             </Grid> */}
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <TextField
                 color="warning"
                 fullWidth

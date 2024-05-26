@@ -84,7 +84,6 @@ const UpdatePhone = ({ open, setOpen, categories, setCategories, handleCloseMenu
   const [errorMessage, setErrorMessage] = useState('');
   const handleSendApi = () => {
     if (values.password !== values.confirmPassword) {
-      console.log('object');
       setSurePass(true);
     } else {
       setLoading(true);
@@ -130,7 +129,6 @@ const UpdatePhone = ({ open, setOpen, categories, setCategories, handleCloseMenu
         });
     }
   };
-  console.log(surePass, 'surePass');
   // password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfigPassword, setShowConfigPassword] = useState(false);

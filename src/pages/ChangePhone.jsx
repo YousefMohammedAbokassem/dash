@@ -159,14 +159,12 @@ export default function ChangePhone() {
         setCategories((prev) => prev.filter((el) => el.id !== selectedList));
         handleCloseMenu();
         // fetchData();
-        console.log(res);
       })
       .catch((error) => {
         setDeleteLoading(false);
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
       });
   };
   const fetchData = () => {
@@ -177,7 +175,6 @@ export default function ChangePhone() {
         headers: headerApi(token),
       })
       .then((res) => {
-        console.log([res.data.data]);
         setCategories([res.data.data]);
         setLoadingData(false);
       })
@@ -185,7 +182,6 @@ export default function ChangePhone() {
         if (error.response.status === 401) {
           dispatch(logoutUser());
         }
-        console.log(error);
         setLoadingData(false);
       });
   };
@@ -201,11 +197,10 @@ export default function ChangePhone() {
   const handleUpdate = () => {
     setOpenUpdate(true);
   };
-  console.log(categories);
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Change Phone </title>
       </Helmet>
 
       <Container>

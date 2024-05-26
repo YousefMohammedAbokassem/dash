@@ -39,7 +39,6 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
       formData.append('lon', markerPosition.lng);
       formData.append('lat', markerPosition.lat);
       formData.append('category_id', values.city_id);
-      console.log(selectFile);
       if (selectFile !== null) {
         formData.append('image', selectFile);
       }
@@ -56,7 +55,6 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
           onUpdateSuccess(res.data.data);
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setErrorMessage(error.response.data.message);
           if (error.response.status === 401) {
@@ -66,7 +64,6 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
     },
   });
   const dispatch = useDispatch();
-  console.log(element);
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -86,7 +83,6 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
         lng: element?.location?.lon,
       });
     }
-    console.log();
     if (element?.images?.length) {
       // setSelectFile(element?.images?.[0]?.path);
       setSelectFile(null);

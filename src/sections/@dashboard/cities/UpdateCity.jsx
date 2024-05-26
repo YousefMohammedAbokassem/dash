@@ -59,7 +59,6 @@ const UpdateCity = ({
           );
         })
         .catch((error) => {
-          console.log(error);
           if (error.response) {
             setErrorMessage(error.response.data.message);
           } else {
@@ -81,12 +80,18 @@ const UpdateCity = ({
       });
     }
   }, [element, formik.setValues]);
-  console.log(cityMap);
   return (
     <>
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          // #############################
+          setOpen(false);
+          formik.resetForm();
+          setErrorMessage('');
+          setSuccessMessage('');
+          handleCloseMenu();
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

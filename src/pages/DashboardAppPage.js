@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import Chart from 'src/components/Chart';
-import Report from './Report';
+import Report from '../components/Report';
 // import Chart from 'src/components/Chart';
 import { headerApi } from 'src/utils/headerApi';
 import { logoutUser } from 'src/store/authSlice';
@@ -46,8 +46,7 @@ export default function DashboardAppPage() {
 
       handleClose();
     } catch (error) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
+      if (error.response.status === 401) {
         dispatch(logoutUser());
       }
     }
@@ -64,8 +63,7 @@ export default function DashboardAppPage() {
 
       handleClose();
     } catch (error) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
+      if (error.response.status === 401) {
         dispatch(logoutUser());
       }
     }

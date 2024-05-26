@@ -24,32 +24,6 @@ const rule = ['admin', 'super'];
 const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
   const { center, markerPosition, setMarkerPosition, setErrorMessageMap, errorMessageMap, setCenter } =
     useGeolocation();
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     console.log(navigator.geolocation, 'asd');
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setCenter({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //         setMarkerPosition({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //         console.log({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //       },
-  //       (error) => {
-  //         setErrorMessage('Error fetching current location');
-  //       }
-  //     );
-  //   } else {
-  //     setErrorMessage('Geolocation is not supported by this browser.');
-  //   }
-  // }, []);
   const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

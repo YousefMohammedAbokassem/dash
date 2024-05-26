@@ -19,9 +19,6 @@ export default function LoginForm() {
   // phone
   ////////////////////////
   const setInfoNumber = (value, country, e, formattedValue) => {
-    // console.log(`${value}`);
-    // console.log(`${country.dialCode}`);
-    // console.log(`${formattedValue}`);
     if (value.indexOf(country.dialCode) !== -1) {
       setValues((prev) => ({
         ...prev,

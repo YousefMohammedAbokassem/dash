@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 // @mui
@@ -20,10 +19,10 @@ import {
   CircularProgress,
 } from '@mui/material';
 // components
-import Iconify from '../components/iconify';
-import Scrollbar from '../components/scrollbar';
+import Iconify from './iconify';
+import Scrollbar from './scrollbar';
 // sections
-import { UserListHead } from '../sections/@dashboard/user'; 
+import { UserListHead } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import axios from 'axios';
@@ -202,11 +201,7 @@ export default function Category() {
   };
   return (
     <>
-      <Helmet>
-        <title> Categories </title>
-      </Helmet>
-
-      <>   
+      <>
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>

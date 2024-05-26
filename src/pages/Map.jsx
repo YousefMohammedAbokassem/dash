@@ -10,10 +10,8 @@ const ViewMap = () => {
   const searchParams = new URLSearchParams(location.search);
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
-  console.log(lng);
   const [mapUrl, setMapUrl] = useState('');
   const [markerPosition, setMarkerPosition] = useState({ lat: parseFloat(lat), lng: parseFloat(lng) });
-  console.log(markerPosition);
   useEffect(() => {
     setMarkerPosition({ lat: parseFloat(lat), lng: parseFloat(lng) });
   }, [lat, lng]);
