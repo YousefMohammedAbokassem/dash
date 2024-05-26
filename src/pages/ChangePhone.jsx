@@ -210,7 +210,7 @@ export default function ChangePhone() {
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom color="warning.main">
             Change Phone
           </Typography>
         </Stack>

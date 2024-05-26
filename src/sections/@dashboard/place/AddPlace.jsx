@@ -93,7 +93,9 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
       formData.append('lon', markerPosition.lng);
       formData.append('lat', markerPosition.lat);
       formData.append('category_id', values.city_id);
-      formData.append('image', selectFile);
+      if (selectFile !== null) {
+        formData.append('image', selectFile);
+      }
       // formData.append('image', selecteFile);
       axios
         .post(`${process.env.REACT_APP_API_URL}admin/places`, formData, {
@@ -135,7 +137,6 @@ const AddCategory = ({ open, setOpenAdd, setData, handleCloseMenu }) => {
   }, []);
   const dispatch = useDispatch();
   // const [markerPosition, setMarkerPosition] = useState({});
-  console.log(markerPosition);
   return (
     <>
       <Dialog

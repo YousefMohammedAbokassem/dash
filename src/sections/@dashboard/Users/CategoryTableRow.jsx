@@ -21,7 +21,7 @@ const CategoryTableRow = ({ category, handleOpenMenu, mainPage }) => {
       <TableCell component="th" scope="row">
         {/* <Stack direction="row" alignItems="center" spacing={2}> */}
         <Typography variant="subtitle2" noWrap>
-          {category?.phone}
+          {`${category?.country_code}${category?.phone}`}
         </Typography>
         {/* </Stack> */}
       </TableCell>

@@ -38,10 +38,11 @@ import { headerApi } from 'src/utils/headerApi';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'gender', label: 'Gender', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'car_type', label: 'Car_Type', alignRight: false },
   { id: 'plate_number', label: 'Plate_Number', alignRight: false },
+  { id: 'gender', label: 'Gender', alignRight: false },
+  { id: 'places', label: 'Places', alignRight: false },
   { id: 'wallet_balance', label: 'wallet_balance', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
@@ -195,6 +196,7 @@ export default function GlobalSetting() {
               return {
                 ...el,
                 status: res.data.data.status,
+                wallet_balance: res.data.data.wallet_balance,
               };
             } else {
               return el;
@@ -259,13 +261,42 @@ export default function GlobalSetting() {
     fetchData();
   }, []);
 
-  // handle update
+  // handle clear
   const [openUpdate, setOpenUpdate] = useState(false);
 
   const [selectedGlobalSetting, setSelectedGlobalSetting] = useState({});
+  const [clearLoading, setClearLoading] = useState(false);
 
-  const handleUpdate = () => {
-    setOpenUpdate(true);
+  const handleUpdate = async () => {
+    setClearLoading(true);
+    // setOpenUpdate(true);
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}admin/drivers/${selectedList}/clearWallet`,
+        {},
+        {
+          headers: headerApi(token),
+        }
+      );
+      setGlobalSettings((prev) =>
+        prev.map((el) => {
+          if (el.id === selectedList) {
+            return {
+              ...el,
+              wallet_balance: res.data.data.wallet_balance,
+            };
+          } else {
+            return el;
+          }
+        })
+      );
+      setClearLoading(false);
+    } catch (error) {
+      setClearLoading(false);
+      if (error.response.status === 401) {
+        dispatch(logoutUser());
+      }
+    }
   };
   return (
     <>
@@ -384,27 +415,26 @@ export default function GlobalSetting() {
         }}
       >
         <MenuItem onClick={handleUpdate}>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Update Global Setting
+          <Iconify icon={'mdi:cash-remove'} sx={{ mr: 2 }} />
+          {clearLoading ? <CircularProgress size={20} /> : 'Clear Wallet'}
         </MenuItem>
         {selectedGlobalSetting?.status === 'pending' ? (
           <>
             <MenuItem sx={{ color: 'primary.main' }} onClick={handleAccept}>
-              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+              <Iconify icon={'eva:checkmark-outline'} sx={{ mr: 2 }} />
               {acceptLoading ? <CircularProgress size={20} /> : 'Accept'}
             </MenuItem>
             <MenuItem sx={{ color: 'error.main' }} onClick={handleReject}>
-              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+              <Iconify icon={'eva:close-outline'} sx={{ mr: 2 }} />
               {rejectLoading ? <CircularProgress size={20} /> : 'Reject'}
             </MenuItem>
           </>
         ) : (
-          ''
+          <MenuItem sx={{ color: 'error.main' }} onClick={handleDeleteAdmin}>
+            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+            {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
+          </MenuItem>
         )}
-        <MenuItem sx={{ color: 'error.main' }} onClick={handleDeleteAdmin}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
-        </MenuItem>
       </Popover>
       {/* <AddDriver open={openAdd} setOpen={setOpenAdd} setData={setGlobalSettings} handleCloseMenu={handleCloseMenu} /> */}
       <UpdateDriver

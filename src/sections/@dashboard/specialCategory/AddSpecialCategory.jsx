@@ -70,9 +70,10 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
         .then((res) => {
           setLoading(false);
           console.log(res);
-          setSuccessMessage('Added Success');
+          // setSuccessMessage('Added Success');
           setData((prev) => [...prev, res.data.data]);
           handleClose();
+          setErrorMessage('');
         })
         .catch((error) => {
           if (error.response) {

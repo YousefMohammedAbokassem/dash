@@ -53,8 +53,8 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
 
   const fileInputRef = useRef(null);
 
-  const [selecteFile, setSelectFile] = useState({});
-  const [imageUrl, setImageUrl] = useState('');
+  const [selecteFile, setSelectFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const handleOpenFile = () => {
     fileInputRef.current.click();
@@ -85,10 +85,12 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
     const formData = new FormData();
     formData.append('name', values.name);
     formData.append('description', values.description);
-    formData.append('image', selecteFile);
+    if (selecteFile !== null) {
+      formData.append('image', selecteFile);
+    }
     formData.append('id', element.id);
     formData.append('_method', 'PUT');
-      formData.append('is_special', 1);
+    formData.append('is_special', 1);
 
     for (var pair of formData.entries()) {
       console.log(pair[0] + ', ' + pair[1]);
@@ -114,13 +116,14 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
                   images: [
                     {
                       ...admin.images,
-                      path: imageUrl,
+                      path: imageUrl || element?.images?.[0]?.path,
                     },
                   ],
                 }
               : admin
           )
         );
+        setErrorMessage('');
       })
       .catch((error) => {
         console.log(error);

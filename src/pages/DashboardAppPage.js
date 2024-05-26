@@ -83,9 +83,6 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Chart />
-          </Grid>
-          <Grid item xs={12}>
             <Report />
           </Grid>
           <Grid item xs={12} justifyContent={'space-between'} display={'flex'}>
@@ -136,6 +133,9 @@ export default function DashboardAppPage() {
                 Taxes Report
               </MenuItem>
             </Menu>
+          </Grid>
+          <Grid item xs={12}>
+            <Chart />
           </Grid>
         </Grid>
       </Container>

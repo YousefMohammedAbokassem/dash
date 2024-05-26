@@ -175,7 +175,7 @@ export default function Category() {
     setLoadingData(true);
     axios
       // .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
-      .get(`${process.env.REACT_APP_API_URL}admin/categories`, {
+      .get(`${process.env.REACT_APP_API_URL}admin/categories/happeningNow`, {
         headers: headerApi(token),
       })
       .then((res) => {

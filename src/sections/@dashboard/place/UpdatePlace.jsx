@@ -20,7 +20,7 @@ import { logoutUser } from 'src/store/authSlice';
 const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
   const { token } = useSelector((state) => state.auth);
   const [markerPosition, setMarkerPosition] = useState({});
-  // const [center, setCenter] = useState(center);
+  const [center, setCenter] = useState({});
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -39,7 +39,10 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
       formData.append('lon', markerPosition.lng);
       formData.append('lat', markerPosition.lat);
       formData.append('category_id', values.city_id);
-      formData.append('image', selectFile);
+      console.log(selectFile);
+      if (selectFile !== null) {
+        formData.append('image', selectFile);
+      }
       formData.append('_method', 'PUT');
 
       axios
@@ -53,8 +56,9 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
           onUpdateSuccess(res.data.data);
         })
         .catch((error) => {
+          console.log(error);
           setLoading(false);
-          setErrorMessage('Error please try again');
+          setErrorMessage(error.response.data.message);
           if (error.response.status === 401) {
             dispatch(logoutUser());
           }
@@ -77,6 +81,17 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
         lat: element?.location?.lat,
         lng: element?.location?.lon,
       });
+      setCenter({
+        lat: element?.location?.lat,
+        lng: element?.location?.lon,
+      });
+    }
+    console.log();
+    if (element?.images?.length) {
+      // setSelectFile(element?.images?.[0]?.path);
+      setSelectFile(null);
+    } else {
+      setSelectFile(null);
     }
   }, [element, formik.setValues]);
   const [loading, setLoading] = useState(false);
@@ -109,6 +124,7 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
   // handle file
   const fileInputRef = useRef(null);
   const [selectFile, setSelectFile] = useState(null);
+
   const handleOpenFile = () => {
     fileInputRef.current.click();
   };
@@ -184,12 +200,7 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
                 </TextField>
               </Grid>
               <Grid item xs={12} sx={{ height: '400px' }}>
-                <Map
-                  zoom={14}
-                  markerPosition={markerPosition}
-                  setMarkerPosition={setMarkerPosition}
-                  center={markerPosition}
-                />
+                <Map zoom={14} markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} center={center} />
               </Grid>
               <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                 <label htmlFor="file">

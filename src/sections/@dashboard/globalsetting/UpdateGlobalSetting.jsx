@@ -27,7 +27,6 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
       image: '',
     });
   };
-
   const [values, setValues] = useState({
     name: '',
     description: '',
@@ -81,10 +80,11 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
   const handleSendApi = () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append('key', values.key);
+    // formData.append('key', values.key);
     formData.append('value', values.value);
+    // formData.append('_method', 'PUT');
     axios
-      .post(`${process.env.REACT_APP_API_URL}admin/settings`, formData, {
+      .post(`${process.env.REACT_APP_API_URL}admin/settings/${element.id}`, formData, {
         headers: headerApi(token),
       })
       .then((res) => {
@@ -96,7 +96,7 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
             admin.id === element.id
               ? {
                   ...admin,
-                  key: values.key,
+                  // key: values.key,
                   value: values.value,
                   // images: [...admin.images, { image: imageUrl }],
                 }
@@ -143,7 +143,7 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3} sx={{ marginTop: '20px' }}>
-            <Grid item xs={12} md={6}>
+          {/*   <Grid item xs={12} md={6}>
               <TextField
                 color="warning"
                 fullWidth
@@ -160,7 +160,7 @@ const UpdateTeacher = ({ open, setOpen, globalSettings, setGlobalSettings, handl
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
             {/* <Grid item xs={12} md={6}>
               <TextField fullWidth label="City" select name="city_id" value={values.city_id} onChange={handleChange}>
                 {city.map((element, index) => (

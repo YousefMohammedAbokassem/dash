@@ -65,25 +65,11 @@ const AddCategory = ({ open, setOpen, setData, handleCloseMenu }) => {
         .then((res) => {
           setLoading(false);
           setSuccessMessage('Added Success');
-          let none = false;
-          setData((prev) => {
-            return prev.map((admin) => {
-              if (admin.id === res.data.data.id) {
-                none = true;
-                return {
-                  ...admin,
-                  key: values.key,
-                  value: values.value,
-                  // images: [...admin.images, { image: imageUrl }],
-                };
-              } else {
-                return admin;
-              }
-            });
-          });
-          if (!none) {
-            setData((prev) => [...prev, res.data.data]);
-          }
+          // let none = false;
+          setData((prev) => [...prev, res.data.data]);
+
+          // if (!none) {
+          // }
           handleClose();
         })
         .catch((error) => {

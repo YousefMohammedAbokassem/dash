@@ -74,6 +74,7 @@ export default function AccountPopover() {
         }}
       >
         <MenuItem onClick={() => navigate('/dashboard/ChangePhone')} sx={{ m: 1 }}>
+          {JSON.parse(localStorage.getItem('admin'))?.country_code}
           {JSON.parse(localStorage.getItem('admin'))?.phone}
         </MenuItem>
         <MenuItem onClick={handleLogout} sx={{ m: 1 }}>

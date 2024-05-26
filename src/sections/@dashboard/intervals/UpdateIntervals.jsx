@@ -18,15 +18,17 @@ import { headerApi } from 'src/utils/headerApi';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import { logoutUser } from 'src/store/authSlice';
 
 const UpdateIntervals = ({ open, handleClose, setData, element }) => {
   const { token } = useSelector((state) => state.auth);
-  console.log(element);
   const [city, setCity] = useState([]);
   const [city_id, setCity_Id] = useState([]);
   const dispatch = useDispatch();
+
+  const [timeError, setTimeError] = useState(false);
+  const [timeErrorMessage, setTimeErrorMessage] = useState('');
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}admin/governorates`, {
@@ -41,6 +43,7 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
         }
       });
   }, []);
+
   const formik = useFormik({
     initialValues: {
       price: '',
@@ -49,16 +52,16 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
       id: '',
       governorate_id: '',
       governorateName: '',
-      // eleFrom: '',
-      // eleTo: '',
     },
     onSubmit: (values) => {
-      console.log(values);
+      if (timeError) {
+        setErrorMessage(timeErrorMessage);
+        return;
+      }
       setLoading(true);
       const formData = new FormData();
       formData.append('from', values.from);
       formData.append('to', values.to);
-      // ###########
       formData.append('_method', 'PUT');
       formData.append('price', values.price);
       formData.append('governorate_id', values.governorate_id);
@@ -76,10 +79,9 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                     ...admin,
                     price: values.price,
                     governorate: {
-                      id: values?.governorate_id,
-                      name: values?.governorateName,
+                      id: values.governorate_id,
+                      name: values.governorateName,
                     },
-
                     to: values.to,
                     from: values.from,
                   }
@@ -96,6 +98,7 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
         });
     },
   });
+
   useEffect(() => {
     if (element) {
       formik.setValues({
@@ -105,20 +108,48 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
         to: element.to || '',
         governorate_id: element.governorate?.id || '',
         governorateName: element.governorate?.name || '',
-        // eleFrom: eleFrom || '',
-        // change date from 04:00:00 to 2024-05-08T04:00
-        // because timePicker does not accept else this system YYYY-MM-DDTHH:mm
-        // eleFrom: dayjs(element.from, 'HH:mm:ss').format('YYYY-MM-DDTHH:mm') || '',
-        // eleTo: dayjs(element.to, 'HH:mm:ss').format('YYYY-MM-DDTHH:mm') || '',
       });
     }
   }, [element, formik.setValues]);
 
   const [loading, setLoading] = useState(false);
-
   const [errorMessage, setErrorMessage] = useState('');
-
   const [successMessage, setSuccessMessage] = useState('');
+
+  const handleFromChange = (value) => {
+    const fromTime = dayjs(value.$d).format('HH:mm:ss');
+    formik.setFieldValue('from', fromTime);
+    const toTime = dayjs(formik.values.to, 'HH:mm:ss');
+
+    if (toTime.isBefore(dayjs(value.$d))) {
+      setTimeError(true);
+      setTimeErrorMessage('"To" time cannot be earlier than "From" time.');
+    } else if (toTime.diff(dayjs(value.$d), 'hour') < 1) {
+      setTimeError(true);
+      setTimeErrorMessage('"To" time must be at least one hour after "From" time.');
+    } else {
+      setTimeError(false);
+      setTimeErrorMessage('');
+    }
+  };
+
+  const handleToChange = (value) => {
+    const toTime = dayjs(value.$d).format('HH:mm:ss');
+    formik.setFieldValue('to', toTime);
+    const fromTime = dayjs(formik.values.from, 'HH:mm:ss');
+
+    if (dayjs(value.$d).isBefore(fromTime)) {
+      setTimeError(true);
+      setTimeErrorMessage('"To" time cannot be earlier than "From" time.');
+    } else if (dayjs(value.$d).diff(fromTime, 'hour') < 1) {
+      setTimeError(true);
+      setTimeErrorMessage('"To" time must be at least one hour after "From" time.');
+    } else {
+      setTimeError(false);
+      setTimeErrorMessage('');
+    }
+  };
+
   return (
     <>
       <Dialog
@@ -133,40 +164,36 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
           </DialogTitle>
           <DialogContent>
             <Grid sx={{ minWidth: '300px', mt: 2 }}>
-              {/* to */}
               <Grid item sx={{ minWidth: '300px', mt: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimePicker
-                    value={dayjs(formik.values.from, 'HH,mm,ss')}
+                    value={dayjs(formik.values.from, 'HH:mm:ss')}
                     sx={{ width: '100%' }}
                     label="From"
                     name="from"
                     required
-                    // onChange={formik.handleChange}
-                    onChange={(value) => {
-                      formik.setFieldValue('from', dayjs(value.$d).format('HH:mm:ss'));
-                    }}
+                    onChange={handleFromChange}
                   />
                 </LocalizationProvider>
               </Grid>
               <Grid item sx={{ minWidth: '300px', mt: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimePicker
-                    value={dayjs(formik.values.to, 'HH,mm,ss')}
-                    // value={dayjs(formik.values.to, 'HH:mm:ss')}
-                    // value={formik.values.to}
+                    value={dayjs(formik.values.to, 'HH:mm:ss')}
                     name="to"
+                    minTime={dayjs(formik.values.from, 'HH:mm:ss')}
                     sx={{ width: '100%' }}
-                    // onChange={formik.handleChange}
-                    onChange={(value) => {
-                      formik.setFieldValue('to', dayjs(value.$d).format('HH:mm:ss'));
-                    }}
-                    label="to"
+                    onChange={handleToChange}
+                    label="To"
                     required
                   />
                 </LocalizationProvider>
               </Grid>
-              {/* cities */}
+              {timeError && (
+                <Typography variant="h6" sx={{ color: 'red', textAlign: 'center', padding: '10px 20px' }}>
+                  {timeErrorMessage}
+                </Typography>
+              )}
               <Grid item xs={12} md={6} sx={{ minWidth: '300px', mt: 2 }}>
                 <TextField
                   color="warning"
@@ -178,12 +205,9 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                   value={formik.values.governorate_id}
                   onChange={(e) => {
                     const selectedGovernorate = city.find((gov) => gov.id === e.target.value);
-                    console.log(selectedGovernorate.name,"Aaaaaaaaaaaaaaaaaaaaaaa");
                     formik.setFieldValue('governorate_id', e.target.value);
                     formik.setFieldValue('governorateName', selectedGovernorate.name);
-                    console.log(e);
                   }}
-                  // value={city_id.target.value}
                 >
                   {city.map((element, index) => (
                     <MenuItem key={index} value={element.id}>
@@ -192,7 +216,6 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                   ))}
                 </TextField>
               </Grid>
-              {/* price */}
               <Grid item xs={12} md={6} sx={{ minWidth: '300px', mt: 2 }}>
                 <TextField
                   color="warning"
@@ -202,7 +225,6 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
                   name="price"
                   type="number"
                   required
-                  // value={price.target.value || price}
                   value={formik.values.price}
                   onChange={formik.handleChange}
                 />
@@ -213,7 +235,13 @@ const UpdateIntervals = ({ open, handleClose, setData, element }) => {
             <Button onClick={handleClose} color="warning">
               Disagree
             </Button>
-            <LoadingButton type="submit" loading={loading} autoFocus color="warning">
+            <LoadingButton
+              disabled={timeError ? true : false}
+              type="submit"
+              loading={loading}
+              autoFocus
+              color="warning"
+            >
               Agree
             </LoadingButton>
           </DialogActions>

@@ -52,8 +52,8 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
 
   const fileInputRef = useRef(null);
 
-  const [selecteFile, setSelectFile] = useState({});
-  const [imageUrl, setImageUrl] = useState('');
+  const [selecteFile, setSelectFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const handleOpenFile = () => {
     fileInputRef.current.click();
@@ -83,11 +83,12 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
     const formData = new FormData();
     formData.append('name', values.name);
     formData.append('description', values.description);
-    formData.append('image', selecteFile);
     formData.append('id', element.id);
     formData.append('_method', 'PUT');
     formData.append('is_special', 0);
-
+    if (selecteFile !== null) {
+      formData.append('image', selecteFile);
+    }
     axios
       .post(`${process.env.REACT_APP_API_URL}admin/categories/${element.id}`, formData, {
         headers: headerApi(token),
@@ -97,22 +98,24 @@ const UpdateTeacher = ({ open, setOpen, categories, setCategories, handleCloseMe
         setOpen(false);
         handleCloseMenu();
         setCategories((prev) =>
-          prev.map((admin) =>
-            admin.id === element.id
-              ? {
-                  ...admin,
-                  name: values.name,
-                  description: values.description,
-                  // images: [...admin.images, { image: imageUrl }],
-                  images: [
-                    {
-                      ...admin.images,
-                      path: imageUrl,
-                    },
-                  ],
-                }
-              : admin
-          )
+          prev.map((admin) => {
+            if (admin.id === element.id) {
+              return {
+                ...admin,
+                name: values.name,
+                description: values.description,
+                // images: [...admin.images, { image: imageUrl }],
+                images: [
+                  {
+                    ...admin.images,
+                    path: imageUrl || element?.images?.[0]?.path,
+                  },
+                ],
+              };
+            } else {
+              return admin;
+            }
+          })
         );
       })
       .catch((error) => {

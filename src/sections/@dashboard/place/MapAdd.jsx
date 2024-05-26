@@ -8,7 +8,7 @@ const containerStyle = {
 };
 
 const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zoom }) => {
-//   const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  //   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [showMap, setShowMap] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,6 +45,9 @@ const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zo
   useEffect(() => {
     errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [errorMessage]);
+  useEffect(() => {
+    getProvinceName(markerPosition.lat, markerPosition.lng);
+  }, []);
 
   // Function to get the current location
 
