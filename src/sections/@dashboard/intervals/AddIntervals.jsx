@@ -155,7 +155,13 @@ const AddIntervals = ({ open, setOpen, setData }) => {
             <Grid item sx={{ minWidth: '300px', mt: 2 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TimePicker
-                  sx={{ width: '100%', color: 'warning.main' }}
+                  sx={{
+                    width: '100%',
+                    color: 'warning.main',
+                    '& .MuiButtonBase-root': {
+                      color: 'warning.main', // لتغيير لون الأزرار
+                    },
+                  }}
                   onChange={handleFromChange}
                   label="From"
                   required
@@ -167,7 +173,12 @@ const AddIntervals = ({ open, setOpen, setData }) => {
             <Grid item sx={{ minWidth: '300px', mt: 2 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TimePicker
-                  sx={{ width: '100%' }}
+                  sx={{
+                    width: '100%',
+                    '& .MuiButtonBase-root': {
+                      color: 'warning.main', // لتغيير لون الأزرار
+                    },
+                  }}
                   onChange={handleToChange}
                   label="To"
                   required

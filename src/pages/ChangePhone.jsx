@@ -144,29 +144,8 @@ export default function ChangePhone() {
 
   const [OpenAdd, setOpenAdd] = useState(false);
 
-  //handle delete admin
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const [selectedList, setSelectedList] = useState('');
-  const handleDeleteAdmin = () => {
-    setDeleteLoading(true);
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}admin/categories/${selectedList}`, {
-        headers: headerApi(token),
-      })
-      .then((res) => {
-        setDeleteLoading(false);
-        setCategories((prev) => prev.filter((el) => el.id !== selectedList));
-        handleCloseMenu();
-        // fetchData();
-      })
-      .catch((error) => {
-        setDeleteLoading(false);
-        if (error.response.status === 401) {
-          dispatch(logoutUser());
-        }
-      });
-  };
   const fetchData = () => {
     setLoadingData(true);
     axios
@@ -305,11 +284,6 @@ export default function ChangePhone() {
         <MenuItem onClick={handleUpdate}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Update Category
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }} onClick={handleDeleteAdmin}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
         </MenuItem>
       </Popover>
       <AddCategory open={OpenAdd} setOpen={setOpenAdd} setData={setCategories} handleCloseMenu={handleCloseMenu} />
