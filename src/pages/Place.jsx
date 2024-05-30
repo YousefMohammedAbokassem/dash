@@ -71,7 +71,26 @@ const Place = () => {
 
     setPlaces(updatedElements);
   };
-
+  const [showMapPopup, setShowMapPopup] = useState(true);
+  const allowShowPosition = () => {
+    navigator.permissions.query({ name: 'geolocation' }).then((res) => {
+      console.log(res);
+      if (res.state === 'granted') {
+        setShowMapPopup(true);
+      } else if (res.state === 'denied' || res.state === 'prompt') {
+        setShowMapPopup(false);
+        let message =
+            'Location access permission was denied. To enable it, please go to your browser settings and allow location access.',
+          instructions =
+            'Here’s how to enable location access in your browser:\n\n' +
+            '1. Open your browser settings.\n' +
+            '2. Go to the Privacy and Security section.\n' +
+            '3. Select Site Settings.\n' +
+            "4. Under Permissions, choose 'Location' and enable access.";
+        alert(message + '\n\n' + instructions);
+      }
+    });
+  };
   return (
     <>
       <Helmet>
@@ -118,9 +137,18 @@ const Place = () => {
           )}
         </div>
       </Container>
-      <AddPlace open={openAdd} setOpenAdd={setOpenAdd} setData={setPlaces} handleCloseMenu={handleClose} />
+      <AddPlace
+        allowShowPosition={allowShowPosition}
+        showMapPopup={showMapPopup}
+        open={openAdd}
+        setOpenAdd={setOpenAdd}
+        setData={setPlaces}
+        handleCloseMenu={handleClose}
+      />
       <DeletePlace open={openDelete} handleClose={handleCloseDelete} id={selectedDelete} setData={setPlaces} />
       <UpdatePlace
+        allowShowPosition={allowShowPosition}
+        showMapPopup={showMapPopup}
         onUpdateSuccess={handleUpdateSuccess}
         open={openUpdate}
         handleClose={handleCloseUpdate}

@@ -7,7 +7,16 @@ const containerStyle = {
   height: '100%',
 };
 
-const Map = ({ markerPosition, setMarkerPosition, setCityMap, formik, zoom, center }) => {
+const Map = ({
+  showMapPopup,
+  allowShowPosition,
+  markerPosition,
+  setMarkerPosition,
+  setCityMap,
+  formik,
+  zoom,
+  center,
+}) => {
   // const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [showMap, setShowMap] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
@@ -45,16 +54,30 @@ const Map = ({ markerPosition, setMarkerPosition, setCityMap, formik, zoom, cent
   useEffect(() => {
     errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [errorMessage]);
-
+  useEffect(() => {
+    allowShowPosition();
+  }, []);
 
   return isLoaded ? (
     <>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={0} onLoad={onLoad} onUnmount={onUnmount}>
-        {markerPosition && <Marker position={markerPosition} />}
-      </GoogleMap>
-      {errorMessage && (
-        <Typography ref={errorRef} variant="h6" sx={{ color: 'red', textAlign: 'center', padding: '10px 20px' }}>
-          {errorMessage}
+      {showMapPopup ? (
+        <>
+          <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={0} onLoad={onLoad} onUnmount={onUnmount}>
+            {markerPosition && <Marker position={markerPosition} />}
+          </GoogleMap>
+          {errorMessage && (
+            <Typography ref={errorRef} variant="h6" sx={{ color: 'red', textAlign: 'center', padding: '10px 20px' }}>
+              {errorMessage}
+            </Typography>
+          )}
+        </>
+      ) : (
+        <Typography
+          variant="h4"
+          component={'div'}
+          sx={{ fontWeight: 'bold', color: 'warning.main', textAlign: 'center' }}
+        >
+          Please enable the website to show location
         </Typography>
       )}
     </>

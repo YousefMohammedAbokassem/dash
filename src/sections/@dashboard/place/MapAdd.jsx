@@ -7,7 +7,7 @@ const containerStyle = {
   height: '100%',
 };
 
-const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zoom }) => {
+const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zoom, allowShowPosition }) => {
   //   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [showMap, setShowMap] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
@@ -15,6 +15,7 @@ const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zo
   const errorRef = useRef(null);
 
   // Initialize Google Map
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.REACT_APP_GOOLEMAP_KEY,
@@ -47,6 +48,7 @@ const Map = ({ markerPosition, center, setMarkerPosition, setCityMap, formik, zo
   }, [errorMessage]);
   useEffect(() => {
     getProvinceName(markerPosition.lat, markerPosition.lng);
+    allowShowPosition();
   }, []);
 
   // Function to get the current location

@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { headerApi } from 'src/utils/headerApi';
 import Map from './Map';
 import { logoutUser } from 'src/store/authSlice';
-const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
+const UpdatePos = ({ element, open, handleClose, onUpdateSuccess, allowShowPosition, showMapPopup }) => {
   const { token } = useSelector((state) => state.auth);
   const [markerPosition, setMarkerPosition] = useState({});
   const [center, setCenter] = useState({});
@@ -195,8 +195,25 @@ const UpdatePos = ({ element, open, handleClose, onUpdateSuccess }) => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={12} sx={{ height: '400px' }}>
-                <Map zoom={14} markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} center={center} />
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  height: '400px',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Map
+                  showMapPopup={showMapPopup}
+                  allowShowPosition={allowShowPosition}
+                  zoom={14}
+                  markerPosition={markerPosition}
+                  setMarkerPosition={setMarkerPosition}
+                  center={center}
+                />
               </Grid>
               <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                 <label htmlFor="file">
